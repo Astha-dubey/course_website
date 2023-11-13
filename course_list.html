@@ -1,0 +1,127 @@
+{% extends "navbar.html" %} {% load static %} {% block body %}
+<script>
+    let price = 0;
+    let discount = 0;
+    let total = 0;
+    function addToCart(disPrice, price, courseId, icon, isCart) {
+        let uri = '';
+        if (isCart)
+            uri = '/add-to-cart'
+        else
+            uri = '/add-to-wish'
+        // Check if the icon color is the default color (e.g., gray)
+        if (icon.style.color === "rgb(191, 173, 173)" || !isCart) {
+            // Change the icon color to a new color (e.g., red)
+            //add
+            $.ajax({
+                type: "GET",
+                url: uri + "?courseId=" + courseId + "&val=add&disPrice=" + disPrice + "&price=" + price,
+                dataType: "JSON",
+                cache: false,
+                async: false,
+                error: function (err) {
+
+                    console.log(err);
+                    // $('#show-error').text('Please provide valid email')
+                },
+                success: function (data) {
+                    icon.style.color = "red";
+                },
+            });
+        } else {
+            // Change the icon color back to the default color
+            //delete
+            $.ajax({
+                type: "GET",
+                url: uri + "?courseId=" + courseId + "&val=del&disPrice=" + disPrice + "&price=" + price,
+                dataType: "JSON",
+                cache: false,
+                async: false,
+                error: function (err) {
+
+                    console.log(err);
+                    // $('#show-error').text('Please provide valid email')
+                },
+                success: function (data) {
+                    icon.style.color = "red";
+                },
+            });
+            icon.style.color = "rgb(191, 173, 173)";
+        }
+    }
+</script>
+<div class="container text-center">
+    <div class="row justify-content-center my-5">
+        {% for course in courses %}
+        <div class="col-4">
+            <div class="card my-4" style="width: 18rem;">
+                <img src="{{ course.image.url }}" class="card-img-top rounded" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.course_name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">Author: {{ course.author }}</h6>
+                    <p class="card-text">
+                        <s>Price: ₹{{ course.price }}</s>
+                        <script>
+                            price = `{{ course.price }}`;
+                            discount = `{{ course.discount }}`;
+                            price = parseInt(price);
+                            discount = parseInt(discount);
+                            total = price - ((price * discount) / 100.0);
+                            console.log(price);
+                            console.log(discount);
+                            console.log(total);
+                            document.write("Discount Price: ₹" + total);
+                        </script>
+                    </p>
+                    <i class="fa fa-heart card-link" style="font-size:48px;color:rgb(191, 173, 173)"
+                        onclick="addToCart(total,`{{ course.price }}`,`{{course.id}}`,this,true)"></i>
+                    <button type="button" class="btn btn-outline-success card-link" style="margin-top: -19px;"
+                        onclick="addToCart(total,`{{ course.price }}`,`{{course.id}}`,this,false)">Add to
+                        Cart</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container text-center">
+    <div class="row justify-content-center my-5">
+        <div class="col">
+            Recommended courses!!!
+        </div>
+    </div>
+    <div class="row justify-content-center my-5">
+        {% for course in suggested_courses %}
+        <div class="col-4">
+            <div class="card my-4" style="width: 18rem;">
+                <img src="{{ course.image.url }}" class="card-img-top rounded" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">Author: {{ course.author }}</h6>
+                    <p class="card-text">
+                        <s>Price: ₹{{ course.price }}</s>
+                        <script>
+                            price = `{{ course.price }}`;
+                            discount = `{{ course.discount }}`;
+                            price = parseInt(price);
+                            discount = parseInt(discount);
+                            total = price - ((price * discount) / 100.0);
+                            console.log(price);
+                            console.log(discount);
+                            console.log(total);
+                            document.write("Discount Price: ₹" + total);
+                        </script>
+                    </p>
+                    <i class="fa fa-heart card-link" style="font-size:48px;color:rgb(191, 173, 173)"
+                        onclick="addToCart(total,`{{ course.price }}`,`{{course.id}}`,this,true)"></i>
+                    <button type="button" class="btn btn-outline-success card-link" style="margin-top: -19px;"
+                        onclick="addToCart(total,`{{ course.price }}`,`{{course.id}}`,this,false)">Add to
+                        Cart</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock body %}

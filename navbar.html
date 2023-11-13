@@ -1,0 +1,44 @@
+{% extends "header.html" %}
+{% load static %}
+<!--Navabar start-->
+
+{% block nav %}
+
+<body onload="navlinkActiveInactive()">
+
+    <ul class="nav nav-tabs justify-content-center text-bg-warning p-3">
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/see-course?id=1" id="1">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/common-items?mode=cart&id=2" id="2">Cart</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/common-items?mode=wish&id=3" id="3">WishList</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/open-account?id=4" id="4">Open Account</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/show-account-details?id=4" id="6">Show Account Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/show-purchased?id=4" id="5">Show Purchased Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/logout?id=4" id="7">LogOut</a>
+        </li>
+    </ul>
+    <!--Navabar ends-->
+    {% block body %}
+
+    {% endblock body %}
+</body>
+<script>
+        function navlinkActiveInactive() {
+        $('.nav-link').removeClass("active");
+        $('#{{id}}').addClass("active");
+    }
+</script>
+</html>
+{% endblock nav %}

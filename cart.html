@@ -1,0 +1,82 @@
+{% extends "navbar.html" %} {% load static %} {% block body %}
+<script>
+    let price = 0;
+    let discount = 0;
+    let total = 0;
+    let totalDiscountPrice = 0;
+    function deleteFromCart(id, courseID) {
+        $.ajax({
+            type: "GET",
+            url: "/deleteCart?courseId=" + courseID,
+            dataType: "JSON",
+            cache: false,
+            async: false,
+            error: function (err) {
+                console.log(err);
+            },
+            success: function (data) {
+                $(`#${id}`).remove();
+                let hold=parseInt( totalDiscountPrice)-parseInt(data.price);
+                $('#price').text("Total Price :: ₹ "+hold);
+            },
+        });
+    }
+</script>
+<form action="/checkout" id="myForm" method="POST">
+    
+    <div class="container text-center">
+        {% csrf_token %}
+        {% for course in courses %}
+        
+        <div class="row justify-content-center my-5" id="mine{{course.id}}">
+            <div class="col" onclick="location.href='/single-course?id={{course.id}}'">
+                <img src="{{ course.image.url }}" class="card-img-top rounded" alt="...">
+            </div>
+            <div class="col">
+                <h5 class="card-title my-4">{{ course.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary my-2">Author: {{ course.author }}</h6>
+                <p class="card-text my-2">
+                    <!-- Other course details go here -->
+                    <s>Price: ₹{{ course.price }}</s>
+                    <script>
+                        price = `{{ course.price }}`;
+                        discount = `{{ course.discount }}`;
+                        price = parseInt(price);
+                        discount = parseInt(discount);
+                        total = price - ((price * discount) / 100.0);
+                        console.log(price);
+                        console.log(discount);
+                        console.log(total);
+                        totalDiscountPrice += total;
+                        document.write("Discount Price: ₹" + total);
+                    </script>
+                </p>
+                {% if showButton %}
+                <div class="form-check form-check-reverse my-2" style="padding-right: 19.5em;">
+                    <input class="form-check-input" type="checkbox" value="{{course.id}}" name="course">
+                    <label class="form-check-label" for="reverseCheck1">
+                        Select
+                    </label>
+                </div>
+                {% endif %}
+                <button type="button" class="btn btn-secondary"
+                    onclick="deleteFromCart('mine{{course.id}}','{{course.id}}')">Delete This</button>
+            </div>
+        </div>
+        {% endfor %}
+        <hr>
+        <div class="row justify-content-center my-5">
+            <div class="col">
+                {% if showButton %}
+                <button type="button" class="btn btn-danger" onclick="document.getElementById('myForm').submit();">Buy
+                    Selected</button>
+                {% endif %}
+            </div>
+            <div class="col" id="price">
+                <script>document.write("Total Price :: ₹ " + totalDiscountPrice)</script>
+            </div>
+        </div>
+
+    </div>
+</form>
+{% endblock body %}

@@ -1,0 +1,122 @@
+{% extends "navbar.html" %} {% load static %} {% block body %}
+<script>
+    let price = 0;
+    let discount = 0;
+    let total = 0;
+    let totalDiscountPrice = 0;
+</script>
+<form action="/checkout" id="myForm" method="POST">
+    <div class="container text-center">
+        {% csrf_token %}
+        {% if course %}
+        <input type="hidden" name="course" value="{{course.id}}">
+        <div class="row">
+            <div class="col" style="text-align: center">
+                <h5 class="card-title my-4">{{ course.decription }}</h5>
+            </div>
+        </div>
+        <div class="row justify-content-center my-5" id="mine{{course.id}}">
+            <div class="col">
+                <img src="{{ course.image.url }}" class="card-img-top rounded" alt="...">
+            </div>
+            <div class="col">
+                <h6 class="card-subtitle mb-2 text-body-secondary my-2">Author: {{ course.author }}</h6>
+                <p class="card-text my-2">
+                    <!-- Other course details go here -->
+                    <s>Price: ₹{{ course.price }}</s>
+                    <script>
+                        price = `{{ course.price }}`;
+                        discount = `{{ course.discount }}`;
+                        price = parseInt(price);
+                        discount = parseInt(discount);
+                        total = price - ((price * discount) / 100.0);
+                        console.log(price);
+                        console.log(discount);
+                        console.log(total);
+                        totalDiscountPrice += total;
+                        document.write("Discount Price: ₹" + total);
+                    </script>
+                </p>
+                <p>Duration :: {{course.duration }}</p>
+                <p>Total Modules :: {{course.modules }}</p>
+                <p>Language :: {{course.language }}</p>
+                <p>Subtitle :: {{course.subtitle}}</p>
+                <p>Created On :: {{course.created_at}}</p>
+                <p>Last Updated On :: {{course.updated_at}}</p>
+                <p>Requirement :: {{course.requirement}} </p>
+            </div>
+        </div>
+        {% else %}
+        <p>No course information available</p>
+        {% endif %}
+        <hr>
+    </div>
+
+    <!-- Instructor Information -->
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-4" style="text-align: center">
+                <h5 class="card-title my-4">Instructor Information !!!</h5>
+            </div>
+        </div>
+
+        {% if instructor %}
+        <div class="row justify-content-center my-5" id="mine{{course.id}}">
+            <div class="col">
+                <img src="{{ instructor.image.url }}" class="card-img-top rounded" alt="...">
+            </div>
+            <div class="col">
+
+
+                <h6 class="card-subtitle mb-2 text-body-secondary my-2">Instructor Name :: {{ instructor.name }}</h6>
+                <p class="card-text my-2">Email :: {{ instructor.email }}</p>
+                <p class="card-text my-2">Lives in :: {{ instructor.address }}</p>
+                <p class="card-text my-2">Experience :: {{ instructor.experience }}</p>
+                <p class="card-text my-2">Desgination :: {{ instructor.designation }}</p>
+                <p class="card-text my-2">Experience Description :: {{ instructor.exp_description }}</p>
+                {% else %}
+                <p>No instructor information available</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+    </div>
+
+    <div class="container text-center">
+        <div class="row">
+            <div class="col" style="text-align: center">
+                <h5 class="card-title my-4">Purchased by {{buy}} and It is in wishlist of {{wishlist}} person's</h5>
+            </div>
+        </div>
+        <hr>
+    </div>
+
+    {% for rate in rating %}
+    <div class="container text-center">
+        <div class="row">
+            <div class="col" style="text-align: center">
+                <h5 class="card-title my-4">Here are some Ratings</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col" style="text-align: center">
+                <h4 class="card-title my-4">Rating :: {{rate.rating}}</h4>
+                <h4 class="card-title my-4">Feedback :: {{rate.feedback}}</h4>
+            </div>
+        </div>
+        <hr>
+    </div>
+    {% endfor %}
+    <div class="container text-center">
+        <div class="row">
+            <div class="col" style="text-align: center">
+                <button type="button" class="btn btn-success" onclick="document.getElementById('myForm').submit();">Buy Now</button>
+            </div>
+            <div class="col" style="text-align: center">
+                <button type="button" class="btn btn-warning" onclick="location.href='/feedback-form' ">Rating</button>
+            </div>
+        </div>
+        <hr>
+    </div>
+</form>
+{% endblock body %}
